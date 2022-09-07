@@ -61,7 +61,16 @@ async def on_ready():
 async def collect_vball_money(ctx, email, amount):
     channel = bot.get_channel(TARGET_CHANNEL_ID)
     await channel.send(f"<@{VBALL_ROLL_ID}> Thanks for coming! For those that came please etransfer ${amount} to {email}")
+    print("[Message] Collect message sent")
     await ctx.respond("Collect message sent", ephemeral=True)
+
+
+@bot.command()
+async def bot_say(ctx, message):
+    channel = bot.get_channel(TARGET_CHANNEL_ID)
+    await channel.send(f"<@{VBALL_ROLL_ID}> {message}")
+    print(f"[Message] Message sent: {message}")
+    await ctx.respond("bot_say message sent", ephemeral=True)
 
 
 @bot.command()
@@ -79,8 +88,10 @@ async def update_last_post(ctx, day, date, time, location, cost):
   *Minimum {MIN_NUM_PLAYERS} upvotes required before booking criteria met.*
   '''
         await latest_poll_msg.edit(content=content)
+        print(f"[Update] Post update")
         await ctx.respond("Post updated", ephemeral=True)
     else:
+        print(f"[Update] Post not found")
         await ctx.respond("Post not found", ephemeral=True)
 
 
@@ -101,11 +112,15 @@ async def post_and_monitor_poll(channel):
                 print(f'[Monitoring Mode] current upvotes: {upvotes}')
             # Check if upvotes criteria has been met
             if upvotes >= MIN_NUM_PLAYERS:
+                print(
+                    f'[Message] Criteria has been met! <@{BOOKER_ID}> has been notified to book the court')
                 await channel.send(f'Criteria has been met! <@{BOOKER_ID}> has been notified to book the court')
                 criteria_not_met = False
                 break
         # Cancel post if not enough votes before due date target time
         if datetime.now() + timedelta(seconds=0) > due_date:
+            print(
+                f'[Message] <@{VBALL_ROLL_ID}> Not enough votes within {TIME_LIMIT_IN_HOURS} hours, no vball this weekend!')
             await channel.send(f'<@{VBALL_ROLL_ID}> Not enough votes within {TIME_LIMIT_IN_HOURS} hours, no vball this weekend!')
             criteria_not_met = False
             break
@@ -123,6 +138,25 @@ async def schedule_weekly_poll():
             if wait_time >= 0:
                 await asyncio.sleep(wait_time)
                 await post_and_monitor_poll(channel)
+            else:
+                await sleep_till_next_wed()
+        else:
+            await sleep_till_next_wed()
+
+
+async def sleep_till_next_wed():
+    today = datetime.today()
+    if today.weekday() == 2:
+        days_ahead = 7
+    else:
+        days_ahead = (2-today.weekday()) % 7
+    next_wed = today + timedelta(days_ahead)
+    next_wed = next_wed.replace(hour=1, minute=0, second=0)
+    now = datetime.now()
+    wait_time = (next_wed-now).total_seconds()
+    print(
+        f"[Sleep] Next Wed is: {next_wed} | Sleeping for {wait_time} seconds ...")
+    asyncio.sleep(wait_time)
 
 
 if __name__ == '__main__':
