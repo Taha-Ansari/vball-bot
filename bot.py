@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 import discord
 import os
-from asyncio import sleep
+import asyncio
 from datetime import datetime, timedelta
 
 intents = discord.Intents.default()
@@ -57,7 +57,7 @@ async def on_ready():
     await schedule_weekly_poll()
 
 
-@bot.slash_command()
+@bot.command()
 async def collect_vball_money(ctx, email, amount):
     channel = bot.get_channel(TARGET_CHANNEL_ID)
     await channel.send(f"<@{VBALL_ROLL_ID}> Thanks for coming! For those that came please etransfer ${amount} to {email}")
@@ -90,10 +90,9 @@ async def post_and_monitor_poll(channel):
     CURRENT_MSG_ID = poll_msg.id
     criteria_not_met = True
     due_date = datetime.now() + timedelta(hours=TIME_LIMIT_IN_HOURS)
-    print(due_date)
     while (criteria_not_met):
         upvotes = 0
-        await sleep(5)
+        await asyncio.sleep(5)
         poll_fetch = await poll_msg.channel.fetch_message(CURRENT_MSG_ID)
         # Calculate current upvotes every 5 seconds
         for reaction in poll_fetch.reactions:
@@ -122,7 +121,7 @@ async def schedule_weekly_poll():
             target = now.replace(hour=12, minute=0, second=0)
             wait_time = (target-now).total_seconds()
             if wait_time >= 0:
-                await sleep(wait_time)
+                await asyncio.sleep(wait_time)
                 await post_and_monitor_poll(channel)
 
 
