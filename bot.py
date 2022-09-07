@@ -151,12 +151,13 @@ async def sleep_till_next_wed():
     else:
         days_ahead = (2-today.weekday()) % 7
     next_wed = today + timedelta(days_ahead)
+    # Bot needs to exit sleep next wed at 1am
     next_wed = next_wed.replace(hour=1, minute=0, second=0)
     now = datetime.now()
     wait_time = (next_wed-now).total_seconds()
     print(
-        f"[Sleep] Next Wed is: {next_wed} | Sleeping for {wait_time} seconds ...")
-    asyncio.sleep(wait_time)
+        f"[Sleep] Target wake day is {next_wed} | Sleeping for {wait_time} seconds ...")
+    await asyncio.sleep(wait_time)
 
 
 if __name__ == '__main__':
