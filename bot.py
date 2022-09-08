@@ -159,6 +159,6 @@ async def sleep_till_next_wed():
         f"[Sleep] Target wake day is {next_wed} | Sleeping for {wait_time} seconds ...")
     await asyncio.sleep(wait_time)
 
-
+# Main
 if __name__ == '__main__':
     bot.run(os.getenv('API_TOKEN'))
