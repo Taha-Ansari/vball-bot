@@ -137,7 +137,7 @@ async def schedule_weekly_poll():
             wait_time = (target-now).total_seconds()
             if wait_time >= 0:
                 print(
-                    f"[Sleep] It is Wed | target time is {target} | sleeping for {wait_time} seconds ...")
+                    f"[Sleep] It is {now} | target time is {target} | sleeping for {wait_time} seconds ...")
                 await asyncio.sleep(wait_time)
                 await post_and_monitor_poll(channel)
             else:
