@@ -142,7 +142,7 @@ async def schedule_weekly_poll():
                 await post_and_monitor_poll(channel)
             else:
                 print(
-                    f"[Sleep] It is Wed but post should be already made. Sleeping till next wed ...")
+                    f"[Sleep] It is {now} but post should be already made. Sleeping till next wed ...")
                 await sleep_till_next_wed()
         else:
             print(f"[Sleep] It is not Wed. Sleeping till next wed ...")
