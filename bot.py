@@ -33,9 +33,9 @@ def get_next_sunday():
 def get_poll_text():
     next_sunday = get_next_sunday()
     date = next_sunday.strftime('%B') + " " + next_sunday.strftime('%d')
-    estimated_time = '5pm-7pm'
-    location = 'Milton Velodrome'
-    estimated_cost = 8.6
+    estimated_time = '3pm-5pm'
+    location = 'Milton Sports Center'
+    estimated_cost = 9
 
     poll = f'''
   <@{VBALL_ROLL_ID}> Who would like to play volleyball this Sunday **({date})?**
@@ -58,9 +58,9 @@ async def on_ready():
 
 
 @bot.command()
-async def collect_vball_money(ctx, email, amount):
+async def collect_vball_money(ctx, amount):
     channel = bot.get_channel(TARGET_CHANNEL_ID)
-    await channel.send(f"<@{VBALL_ROLL_ID}> Thanks for coming! For those that came please etransfer ${amount} to {email}")
+    await channel.send(f"<@{VBALL_ROLL_ID}> Thanks for coming! For those that came please etransfer ${amount} to taha-ansari@hotmail.com")
     print("[Message] Collect message sent")
     await ctx.respond("Collect message sent", ephemeral=True)
 
@@ -136,11 +136,16 @@ async def schedule_weekly_poll():
             target = now.replace(hour=12, minute=0, second=0)
             wait_time = (target-now).total_seconds()
             if wait_time >= 0:
+                print(
+                    f"[Sleep] It is Wed | target time is {target} | sleeping for {wait_time} seconds ...")
                 await asyncio.sleep(wait_time)
                 await post_and_monitor_poll(channel)
             else:
+                print(
+                    f"[Sleep] It is Wed but post should be already made. Sleeping till next wed ...")
                 await sleep_till_next_wed()
         else:
+            print(f"[Sleep] It is not Wed. Sleeping till next wed ...")
             await sleep_till_next_wed()
 
 
