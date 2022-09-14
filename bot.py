@@ -133,7 +133,7 @@ async def schedule_weekly_poll():
         day = datetime.today().weekday()
         if day == WEDNESDAY_NUM:
             now = datetime.now()
-            target = now.replace(hour=12, minute=0, second=0)
+            target = now.replace(hour=16, minute=0, second=0)
             wait_time = (target-now).total_seconds()
             if wait_time >= 0:
                 print(
